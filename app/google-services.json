@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "721394922793",
+    "project_id": "eventivo-rma",
+    "storage_bucket": "eventivo-rma.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:721394922793:android:502faa108f0a779d7af338",
+        "android_client_info": {
+          "package_name": "hr.mcesnik.eventivo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCl-w-k6YwBG7AC3jrboFfgdmlfVYS9bFo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
