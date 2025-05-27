@@ -1,6 +1,6 @@
 package hr.mcesnik.eventivo
 
-import hr.mcesnik.eventivo.presentation.ui.screens.HomeScreen
+import hr.mcesnik.eventivo.view.HomeScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,10 +10,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import hr.mcesnik.eventivo.presentation.ui.screens.EventScreen
-import hr.mcesnik.eventivo.presentation.ui.screens.FavoriteScreen
-import hr.mcesnik.eventivo.presentation.ui.screens.LoginScreen
+import hr.mcesnik.eventivo.view.EventScreen
+import hr.mcesnik.eventivo.view.FavoriteScreen
+import hr.mcesnik.eventivo.view.LoginScreen
 import hr.mcesnik.eventivo.ui.theme.EventivoTheme
+import hr.mcesnik.eventivo.view.ProfileScreen
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
@@ -21,7 +22,8 @@ fun AppNavHost(navController: NavHostController) {
         composable("login") { LoginScreen(navController) }
         composable("home") { HomeScreen(navController) }
         composable("favorites") { FavoriteScreen(navController)  }
-        composable("event") { EventScreen(navController)}
+        composable("event") { EventScreen(navController) }
+        composable("profile") { ProfileScreen(navController) }
     }
 }
 

@@ -1,4 +1,4 @@
-package hr.mcesnik.eventivo.presentation.ui.screens
+package hr.mcesnik.eventivo.view
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
