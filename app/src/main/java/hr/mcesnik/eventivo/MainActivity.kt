@@ -10,7 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import hr.mcesnik.eventivo.view.EventScreen
+import hr.mcesnik.eventivo.event.EventScreen
 import hr.mcesnik.eventivo.view.FavoriteScreen
 import hr.mcesnik.eventivo.view.LoginScreen
 import hr.mcesnik.eventivo.ui.theme.EventivoTheme

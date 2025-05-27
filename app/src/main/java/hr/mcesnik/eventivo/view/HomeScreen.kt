@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import hr.mcesnik.eventivo.components.StaticSearchBar
-import hr.mcesnik.eventivo.viewmodel.EventViewModel
+import hr.mcesnik.eventivo.event.EventViewModel
 import kotlinx.coroutines.launch
 
 

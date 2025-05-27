@@ -1,4 +1,4 @@
-package hr.mcesnik.eventivo.viewmodel
+package hr.mcesnik.eventivo.event
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
