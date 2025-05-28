@@ -7,5 +7,6 @@ data class Event(
     val date: Date? = null,
     val clothing: String = "",
     val drink: String = "",
-    val music: String = ""
+    val music: String = "",
+    val image: String = ""
 )

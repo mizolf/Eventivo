@@ -1,11 +1,13 @@
 package hr.mcesnik.eventivo.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,10 +26,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import hr.mcesnik.eventivo.model.Event
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -42,14 +48,11 @@ fun EventCard(
 ){
     Column {
         Box(modifier = Modifier.height(180.dp)) {
-            // Placeholder slika - zamijeni s pravim iz Firestore ili mreže
-            /*Image(
-                painter = painterResource(id = android.R.drawable.ic_menu_gallery),
-                contentDescription = "Event Image",
-                modifier = Modifier
-                    .fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )*/
+
+            AsyncImage(
+                model = event.image,
+                contentDescription = event.title
+            )
 
             IconButton(
                 onClick = { /* handle favorite */ },
@@ -65,37 +68,29 @@ fun EventCard(
             }
         }
 
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = event.title,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
 
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = "${event.date?.let { SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(it) } ?: "Date TBD"}",
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.Star,
-                        contentDescription = "Rating",
-                        tint = Color(0xFFFFA000)
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = event.title,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(text = "4.6", fontWeight = FontWeight.SemiBold)
-                    Text(text = " • 56 reviews", color = Color.Gray)
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "${event.date?.let { SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(it) } ?: "Date TBD"}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Gray
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
 
                 IconButton(
@@ -115,6 +110,5 @@ fun EventCard(
                     )
                 }
             }
-        }
     }
 }
