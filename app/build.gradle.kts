@@ -57,8 +57,11 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.androidx.navigation.runtime.android)
 
+    implementation(platform("com.google.firebase:firebase-bom:33.14.0"))
     implementation("androidx.navigation:navigation-compose:2.9.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+    implementation("com.google.firebase:firebase-auth")
+    implementation(libs.androidx.benchmark.macro)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

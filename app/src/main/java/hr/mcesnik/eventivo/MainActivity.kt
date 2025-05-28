@@ -10,11 +10,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import hr.mcesnik.eventivo.event.EventScreen
+import hr.mcesnik.eventivo.view.EventScreen
 import hr.mcesnik.eventivo.view.FavoriteScreen
 import hr.mcesnik.eventivo.view.LoginScreen
 import hr.mcesnik.eventivo.ui.theme.EventivoTheme
 import hr.mcesnik.eventivo.view.ProfileScreen
+import hr.mcesnik.eventivo.view.RegisterScreen
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
@@ -24,6 +25,7 @@ fun AppNavHost(navController: NavHostController) {
         composable("favorites") { FavoriteScreen(navController)  }
         composable("event") { EventScreen(navController) }
         composable("profile") { ProfileScreen(navController) }
+        composable("register") { RegisterScreen(navController) }
     }
 }
 

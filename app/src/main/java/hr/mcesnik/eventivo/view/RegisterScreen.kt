@@ -37,9 +37,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.google.firebase.auth.FirebaseAuth
 
-
 @Composable
-fun LoginScreen(navController: NavHostController) {
+fun RegisterScreen(navController: NavHostController) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
 
@@ -69,7 +68,7 @@ fun LoginScreen(navController: NavHostController) {
             )
 
             Text(
-                text = "Please sign in",
+                text = "Please sign up",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF333333),
@@ -128,11 +127,11 @@ fun LoginScreen(navController: NavHostController) {
 
             val annotatedString = buildAnnotatedString {
                 withStyle(style = SpanStyle(color = Color(0xFF666666))) {
-                    append("Don't have an account? ")
+                    append("Already have an account? ")
                 }
-                pushStringAnnotation(tag = "register", annotation = "register")
+                pushStringAnnotation(tag = "login", annotation = "login")
                 withStyle(style = SpanStyle(color = Color(0xFF7C4DFF), fontWeight = FontWeight.Medium)) {
-                    append("Register Here")
+                    append("Login")
                 }
                 pop()
             }
@@ -141,12 +140,12 @@ fun LoginScreen(navController: NavHostController) {
                 text = annotatedString,
                 onClick = { offset ->
                     annotatedString.getStringAnnotations(
-                        tag = "register",
+                        tag = "login",
                         start = offset,
                         end = offset
                     ).firstOrNull()?.let {
                         // Navigate to register screen
-                        navController.navigate("register")
+                        navController.navigate("login")
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -164,12 +163,11 @@ fun LoginScreen(navController: NavHostController) {
                     isLoading.value = true
                     loginError.value = null
 
-                    auth.signInWithEmailAndPassword(email.value, password.value)
+                    auth.createUserWithEmailAndPassword(email.value, password.value)
                         .addOnCompleteListener { task ->
-                            isLoading.value = false
                             if (task.isSuccessful) {
-                                navController.navigate("home") {
-                                    popUpTo("login") { inclusive = true }
+                                navController.navigate("login") {
+                                    popUpTo("register") { inclusive = true }
                                 }
                             } else {
                                 loginError.value = task.exception?.message ?: "Authentication failed"
@@ -185,7 +183,7 @@ fun LoginScreen(navController: NavHostController) {
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(
-                    text = "LOGIN",
+                    text = "REGISTER",
                     color = Color.White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,

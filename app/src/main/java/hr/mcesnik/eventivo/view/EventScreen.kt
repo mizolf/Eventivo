@@ -1,4 +1,4 @@
-package hr.mcesnik.eventivo.event
+package hr.mcesnik.eventivo.view
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController

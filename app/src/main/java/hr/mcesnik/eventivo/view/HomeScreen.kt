@@ -36,7 +36,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import hr.mcesnik.eventivo.components.StaticSearchBar
-import hr.mcesnik.eventivo.event.EventViewModel
+import hr.mcesnik.eventivo.components.EventCard
+import hr.mcesnik.eventivo.viewmodel.EventViewModel
 import kotlinx.coroutines.launch
 
 
@@ -122,7 +123,7 @@ fun HomeScreen(navController: NavHostController, viewModel: EventViewModel = vie
                 )
                 LazyColumn {
                     items(events) { event ->
-                        Text(event.title)
+                        EventCard(event, modifier = Modifier, navController)
                     }
                 }
             }
