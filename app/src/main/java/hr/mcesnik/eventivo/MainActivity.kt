@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -21,12 +22,17 @@ import hr.mcesnik.eventivo.view.LoginScreen
 import hr.mcesnik.eventivo.view.NewEventScreen
 import hr.mcesnik.eventivo.view.ProfileScreen
 import hr.mcesnik.eventivo.view.RegisterScreen
+import hr.mcesnik.eventivo.viewmodel.EventViewModel
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
+    val eventViewModel: EventViewModel = viewModel()
     NavHost(navController = navController, startDestination = "login") {
         composable("login") { LoginScreen(navController) }
-        composable("home") { HomeScreen(navController) }
+        composable("home") {
+            HomeScreen(navController,
+                viewModel = eventViewModel)
+        }
         composable("favorites") { FavoriteScreen(navController)  }
         composable("event/{eventJson}",
             arguments = listOf(navArgument("eventJson"){ type=NavType.StringType})

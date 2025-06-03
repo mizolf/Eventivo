@@ -64,6 +64,7 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("androidx.compose.material:material-icons-extended")
+    implementation("com.google.firebase:firebase-storage-ktx")
     implementation(libs.androidx.benchmark.macro)
 
     testImplementation(libs.junit)

@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -75,13 +76,15 @@ fun EventScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Box(
-                modifier = Modifier.height(300.dp)
+                modifier = Modifier.height(250.dp)
+
             ) {
                 Image(
                     painter = rememberAsyncImagePainter(event.image),
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
+                        .fillMaxHeight()
                         .clip(RoundedCornerShape(10.dp))
                         .border(
                             width = 1.dp,
@@ -93,7 +96,7 @@ fun EventScreen(
             }
             EventInfoCard(icon = Icons.Default.LocalDrink, label = "Drink", value = event.drink)
             EventInfoCard(icon = Icons.Default.MusicNote, label = "Music", value = event.music)
-            EventInfoCard(icon = Icons.Default.Checkroom, label = "Clothing", value = event.clothing)
+            EventInfoCard(icon = Icons.Default.Checkroom, label = "Dress Code", value = event.clothing)
 
             val formattedDate = event.date?.let {
                 SimpleDateFormat("EEE, d MMM yyyy HH:mm", Locale.getDefault()).format(it)
