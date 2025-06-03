@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -22,18 +23,37 @@ import hr.mcesnik.eventivo.view.LoginScreen
 import hr.mcesnik.eventivo.view.NewEventScreen
 import hr.mcesnik.eventivo.view.ProfileScreen
 import hr.mcesnik.eventivo.view.RegisterScreen
+import hr.mcesnik.eventivo.viewmodel.AuthViewModel
 import hr.mcesnik.eventivo.viewmodel.EventViewModel
+import hr.mcesnik.eventivo.viewmodel.FavoritesViewModel
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
     val eventViewModel: EventViewModel = viewModel()
+    val favoritesViewModel: FavoritesViewModel = viewModel()
+    val authViewModel: AuthViewModel = viewModel()
     NavHost(navController = navController, startDestination = "login") {
-        composable("login") { LoginScreen(navController) }
-        composable("home") {
-            HomeScreen(navController,
-                viewModel = eventViewModel)
+        composable("login") {
+            LoginScreen(
+                navController,
+                authViewModel
+            )
         }
-        composable("favorites") { FavoriteScreen(navController)  }
+        composable("home") {
+            HomeScreen(
+                navController,
+                eventViewModel = eventViewModel,
+                favoritesViewModel = favoritesViewModel,
+                authViewModel = authViewModel
+            )
+        }
+        composable("favorites") {
+            FavoriteScreen(
+                navController,
+                favoritesViewModel,
+                authViewModel
+            )
+        }
         composable("event/{eventJson}",
             arguments = listOf(navArgument("eventJson"){ type=NavType.StringType})
             ) { backStackEntry ->

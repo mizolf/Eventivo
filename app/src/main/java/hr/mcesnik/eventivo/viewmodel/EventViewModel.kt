@@ -34,7 +34,7 @@ class EventViewModel : ViewModel() {
                 snapshot?.let { querySnapshot ->
                     val eventList = querySnapshot.documents.mapNotNull { document ->
                         try {
-                            document.toObject(Event::class.java)
+                            document.toObject(Event::class.java)?.copy(id = document.id)
                         } catch (e: Exception) {
                             Log.e("EventViewModel", "Error converting document to Event", e)
                             null

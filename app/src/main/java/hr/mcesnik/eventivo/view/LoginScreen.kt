@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
@@ -16,11 +17,14 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -35,18 +39,19 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.google.firebase.auth.FirebaseAuth
+import hr.mcesnik.eventivo.viewmodel.AuthViewModel
 
 
 @Composable
-fun LoginScreen(navController: NavHostController) {
+fun LoginScreen(
+    navController: NavHostController,
+    authViewModel: AuthViewModel
+) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
 
-    val auth = FirebaseAuth.getInstance()
-    val loginError = remember { mutableStateOf<String?>(null) }
-    val isLoading = remember { mutableStateOf(false) }
-
+    val isLoading by authViewModel.isLoading.collectAsState()
+    val authError by authViewModel.authError.collectAsState()
 
     Box(
         modifier = Modifier
@@ -161,38 +166,38 @@ fun LoginScreen(navController: NavHostController) {
 
             Button(
                 onClick = {
-                    isLoading.value = true
-                    loginError.value = null
-
-                    auth.signInWithEmailAndPassword(email.value, password.value)
-                        .addOnCompleteListener { task ->
-                            isLoading.value = false
-                            if (task.isSuccessful) {
-                                navController.navigate("home") {
-                                    popUpTo("login") { inclusive = true }
-                                }
-                            } else {
-                                loginError.value = task.exception?.message ?: "Authentication failed"
-                            }
+                    authViewModel.login(email.value, password.value){
+                        navController.navigate("home"){
+                            popUpTo("login") { inclusive = true}
                         }
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
+                enabled = !isLoading,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF333333)
                 ),
                 shape = RoundedCornerShape(8.dp)
             ) {
-                Text(
-                    text = "LOGIN",
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    letterSpacing = 1.sp
-                )
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        color = Color.White,
+                        modifier = Modifier.size(20.dp),
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text(
+                        text = "LOGIN",
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        letterSpacing = 1.sp
+                    )
+                }
             }
-            loginError.value?.let {
+            authError?.let {
                 Text(
                     text = it,
                     color = Color.Red,

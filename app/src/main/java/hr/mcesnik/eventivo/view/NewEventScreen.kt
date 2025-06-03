@@ -216,6 +216,7 @@ fun NewEventScreen(
                 onClick = {
                     if (imageUri.value != null) {
                         uploading.value = true
+                        val firestore = FirebaseFirestore.getInstance()
                         val storageRef = FirebaseStorage.getInstance().reference
                         val imageRef = storageRef.child("events/${UUID.randomUUID()}.jpg")
                         imageRef.putFile(imageUri.value!!)
@@ -225,7 +226,11 @@ fun NewEventScreen(
                             }.addOnSuccessListener { uri ->
                                 val imageUrl = uri.toString()
 
+                                val eventDocRef = firestore.collection("events").document()
+                                val eventId = eventDocRef.id
+
                                 val newEvent = Event(
+                                    id = eventId,
                                     title = title.value,
                                     clothing = clothing.value,
                                     date = date.value,
@@ -234,7 +239,7 @@ fun NewEventScreen(
                                     image = imageUrl
                                 )
 
-                                FirebaseFirestore.getInstance().collection("events")
+                                firestore.collection("events")
                                     .add(newEvent)
                                     .addOnSuccessListener {
                                         Toast.makeText(context, "Event created!", Toast.LENGTH_SHORT).show()

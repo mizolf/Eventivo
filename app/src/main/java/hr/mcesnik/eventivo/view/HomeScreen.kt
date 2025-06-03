@@ -46,20 +46,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.google.firebase.auth.FirebaseAuth
 import hr.mcesnik.eventivo.components.EventCard
 import hr.mcesnik.eventivo.components.StaticSearchBar
+import hr.mcesnik.eventivo.viewmodel.AuthViewModel
 import hr.mcesnik.eventivo.viewmodel.EventViewModel
+import hr.mcesnik.eventivo.viewmodel.FavoritesViewModel
 import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavHostController, viewModel: EventViewModel) {
-    val events by viewModel.events.collectAsState()
+fun HomeScreen(
+    navController: NavHostController,
+    eventViewModel: EventViewModel,
+    favoritesViewModel: FavoritesViewModel,
+    authViewModel: AuthViewModel
+) {
+    val events by eventViewModel.events.collectAsState()
+    val userId by authViewModel.userId.collectAsState()
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-
 
     var searchQuery by rememberSaveable { mutableStateOf("") }
     var searchResults by remember { mutableStateOf(listOf<String>()) }
@@ -166,7 +174,12 @@ fun HomeScreen(navController: NavHostController, viewModel: EventViewModel) {
 
                 LazyColumn {
                     items(events) { event ->
-                        EventCard(event, modifier = Modifier, navController)
+                        EventCard(
+                            event,
+                            navController,
+                            favoritesViewModel,
+                            authViewModel
+                        )
                     }
                 }
             }

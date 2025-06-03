@@ -3,6 +3,7 @@ package hr.mcesnik.eventivo.model
 import java.util.Date
 
 data class Event(
+    val id: String = "",
     val title: String = "",
     val date: Date? = null,
     val clothing: String = "",
