@@ -33,6 +33,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -71,12 +72,23 @@ fun HomeScreen(
     val scope = rememberCoroutineScope()
 
     var searchQuery by rememberSaveable { mutableStateOf("") }
-    var searchResults by remember { mutableStateOf(listOf<String>()) }
+    var filteredEvents by remember { mutableStateOf(events) }
 
     fun performSearch(query: String) {
-        searchResults = listOf("Rezultat 1", "Rezultat 2", "Rezultat 3").filter {
-            it.contains(query, ignoreCase = true)
+        filteredEvents = if (query.isEmpty()) {
+            events
+        } else {
+            events.filter { event ->
+                event.title.contains(query, ignoreCase = true) ||
+                        event.clothing.contains(query, ignoreCase = true) ||
+                        event.drink.contains(query, ignoreCase = true) ||
+                        event.music.contains(query, ignoreCase = true)
+            }
         }
+    }
+
+    LaunchedEffect(events, searchQuery) {
+        performSearch(searchQuery)
     }
 
     ModalNavigationDrawer(
@@ -102,6 +114,7 @@ fun HomeScreen(
                     icon = { Icon(Icons.Filled.Favorite, contentDescription = null) },
                     onClick = {
                         navController.navigate("favorites")
+                        scope.launch { drawerState.close() }
                     }
                 )
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
@@ -110,7 +123,9 @@ fun HomeScreen(
                     label = { Text("Help and feedback") },
                     selected = false,
                     icon = { Icon(Icons.Filled.Info, contentDescription = null) },
-                    onClick = { /* Handle click */ },
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                    },
                 )
                 NavigationDrawerItem(
                     label = { Text("Logout") },
@@ -119,11 +134,14 @@ fun HomeScreen(
                         imageVector = Icons.AutoMirrored.Outlined.Logout,
                         contentDescription = "Logout"
                     ) },
-                    onClick = { authViewModel.logout()
+                    onClick = {
+                        authViewModel.logout()
                         navController.navigate("login") {
                             popUpTo(0)
                             launchSingleTop = true
-                        } },
+                        }
+                        scope.launch { drawerState.close() }
+                    },
                 )
             }
         }
@@ -141,10 +159,8 @@ fun HomeScreen(
                             )
                         }
                     },
-
                 )
             }
-
         ) { innerPadding ->
             Column(
                 modifier = Modifier
@@ -154,21 +170,35 @@ fun HomeScreen(
             ) {
                 StaticSearchBar(
                     query = searchQuery,
-                    onQueryChange = { searchQuery = it },
+                    onQueryChange = {
+                        searchQuery = it
+                        performSearch(it)
+                    },
                     onSearch = { performSearch(it) },
                 )
 
                 Row (
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                        .padding(innerPadding.calculateBottomPadding())
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
                 ) {
-                    Text("List of events", style = TextStyle(
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 24.sp,
-
-                    ))
+                    Column {
+                        Text("List of events", style = TextStyle(
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 24.sp,
+                        ))
+                        if (searchQuery.isNotEmpty()) {
+                            Text(
+                                text = "${filteredEvents.size} rezultata za \"$searchQuery\"",
+                                style = TextStyle(
+                                    fontSize = 14.sp,
+                                    color = Color.Gray
+                                )
+                            )
+                        }
+                    }
 
                     IconButton(
                         onClick = {
@@ -186,8 +216,10 @@ fun HomeScreen(
                     }
                 }
 
-                LazyColumn {
-                    items(events) { event ->
+                LazyColumn(
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                ) {
+                    items(filteredEvents) { event ->
                         EventCard(
                             event,
                             navController,
@@ -195,9 +227,28 @@ fun HomeScreen(
                             authViewModel
                         )
                     }
+
+                    if (filteredEvents.isEmpty() && searchQuery.isNotEmpty()) {
+                        item {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(32.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "Nema događaja koji odgovaraju vašoj pretrazi",
+                                    style = TextStyle(
+                                        fontSize = 16.sp,
+                                        color = Color.Gray
+                                    )
+                                )
+
+                            }
+                        }
+                    }
                 }
             }
-
         }
     }
 }
