@@ -80,9 +80,9 @@ fun EventCard(
             IconButton(
                 onClick = {
                     if (isFavorite) {
-                        favoritesViewModel.removeFromFavorites(userId, event.id)
+                        favoritesViewModel.removeFromFavorites(event.id)
                     } else {
-                        favoritesViewModel.addToFavorites(userId, event)
+                        favoritesViewModel.addToFavorites(event)
                     }
                 },
                 modifier = Modifier
