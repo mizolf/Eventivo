@@ -93,7 +93,7 @@ fun HomeScreen(
                     selected = false,
                     icon = { Icon(Icons.Filled.Home, contentDescription = null) },
                     onClick = {
-                        navController.navigate("home")
+                        scope.launch { drawerState.close() }
                     }
                 )
                 NavigationDrawerItem(
