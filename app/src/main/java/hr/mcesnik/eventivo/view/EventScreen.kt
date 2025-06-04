@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Checkroom
 import androidx.compose.material.icons.filled.Event
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.LocalDrink
 import androidx.compose.material.icons.filled.MusicNote
@@ -25,6 +26,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -34,6 +37,7 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import hr.mcesnik.eventivo.components.EventInfoCard
 import hr.mcesnik.eventivo.model.Event
+import hr.mcesnik.eventivo.viewmodel.FavoritesViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -41,8 +45,10 @@ import java.util.Locale
 @Composable
 fun EventScreen(
     navController: NavHostController,
-    event: Event
+    event: Event,
+    favoritesViewModel: FavoritesViewModel,
 ){
+    val isFavorite by favoritesViewModel.isFavorite(event.id).collectAsState()
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -57,9 +63,15 @@ fun EventScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = {  }) {
+                    IconButton(onClick = {
+                        if (isFavorite) {
+                            favoritesViewModel.removeFromFavorites(event.id)
+                        } else {
+                            favoritesViewModel.addToFavorites(event)
+                        }
+                    }) {
                         Icon(
-                            imageVector = Icons.Filled.FavoriteBorder,
+                            imageVector = if(isFavorite) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
                             contentDescription = "Favorite"
                         )
                     }

@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
@@ -52,15 +54,18 @@ fun EventCard(
     navController: NavHostController,
     favoritesViewModel: FavoritesViewModel,
     authViewModel: AuthViewModel,
-    onClick: () -> Unit = {}
 ){
-    var isFavorite by remember { mutableStateOf(false) }
-    val userId by authViewModel.userId.collectAsState()
+    val isFavorite by favoritesViewModel.isFavorite(event.id).collectAsState()
+    val eventJson = Uri.encode(Gson().toJson(event))
+    val navigateToEventScreen = {
+        navController.navigate("event/$eventJson")
+    }
 
     Column {
         Box(
             modifier = Modifier.height(180.dp)
                 .padding(8.dp)
+                .clickable{ navigateToEventScreen()}
         ) {
             Image(
                 painter = rememberAsyncImagePainter(event.image),
@@ -91,8 +96,8 @@ fun EventCard(
                     .background(Color.White.copy(alpha = 0.3f), CircleShape)
             ) {
                 Icon(
-                    imageVector = Icons.Default.FavoriteBorder,
-                    contentDescription = "Like"
+                    imageVector = if(isFavorite) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
+                    contentDescription = "Favorite"
                 )
             }
         }
@@ -122,11 +127,10 @@ fun EventCard(
 
                 IconButton(
                     onClick = {
-                        val eventJson = Uri.encode(Gson().toJson(event))
-                        navController.navigate("event/$eventJson")
+                        navigateToEventScreen()
                     },
                     modifier = Modifier
-                        .background(MaterialTheme.colorScheme.primary, CircleShape)
+                        .background(Color.DarkGray, CircleShape)
                         .size(32.dp)
                 ) {
                     Icon(

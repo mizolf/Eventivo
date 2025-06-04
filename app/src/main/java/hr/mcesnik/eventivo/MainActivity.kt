@@ -59,7 +59,11 @@ fun AppNavHost(navController: NavHostController) {
             ) { backStackEntry ->
                 val json = backStackEntry.arguments?.getString("eventJson")
                 val event = Gson().fromJson(json, Event::class.java)
-                EventScreen(event = event, navController = navController)
+                EventScreen(
+                    event = event,
+                    navController = navController,
+                    favoritesViewModel = favoritesViewModel,
+                )
         }
         composable("profile") { ProfileScreen(navController) }
         composable("register") { RegisterScreen(navController) }
