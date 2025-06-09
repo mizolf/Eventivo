@@ -202,7 +202,7 @@ fun HomeScreen(
                         ))
                         if (searchQuery.isNotEmpty()) {
                             Text(
-                                text = "${filteredEvents.size} rezultata za \"$searchQuery\"",
+                                text = "${filteredEvents.size} results for \"$searchQuery\"",
                                 style = TextStyle(
                                     fontSize = 14.sp,
                                     color = Color.Gray
