@@ -66,6 +66,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     implementation("com.google.firebase:firebase-storage-ktx")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+    implementation ("androidx.core:core:1.12.0")
     implementation(libs.androidx.benchmark.macro)
 
     testImplementation(libs.junit)

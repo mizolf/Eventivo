@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
@@ -49,6 +50,8 @@ fun EventScreen(
     favoritesViewModel: FavoritesViewModel,
 ){
     val isFavorite by favoritesViewModel.isFavorite(event.id).collectAsState()
+    val context = LocalContext.current
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -67,7 +70,7 @@ fun EventScreen(
                         if (isFavorite) {
                             favoritesViewModel.removeFromFavorites(event.id)
                         } else {
-                            favoritesViewModel.addToFavorites(event)
+                            favoritesViewModel.addToFavorites(event, context)
                         }
                     }) {
                         Icon(

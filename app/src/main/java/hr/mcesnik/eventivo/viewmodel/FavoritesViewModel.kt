@@ -1,19 +1,24 @@
 package hr.mcesnik.eventivo.viewmodel
 
+import android.app.NotificationManager
+import android.content.Context
 import android.util.Log
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.Icon
+import androidx.core.app.NotificationCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import hr.mcesnik.eventivo.R
 import hr.mcesnik.eventivo.model.Event
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
 class FavoritesViewModel : ViewModel() {
     private val _favoriteEvents = MutableStateFlow<List<Event>>(emptyList())
@@ -62,7 +67,21 @@ class FavoritesViewModel : ViewModel() {
             }
     }
 
-    fun addToFavorites(event: Event) {
+    private fun sendFavoriteAddedNotification(context: Context, eventTitle: String) {
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        val notification = NotificationCompat.Builder(context, "favorites_channel")
+            .setSmallIcon(R.drawable.ic_favorite)
+            .setContentTitle("Added to favorites")
+            .setContentText("Event \"$eventTitle\" is added to favorites.")
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .build()
+
+        notificationManager.notify(eventTitle.hashCode(), notification)
+    }
+
+    fun addToFavorites(event: Event, context: Context) {
         val currentUserId = auth.currentUser?.uid
         if (currentUserId.isNullOrBlank() || event.id.isBlank()) return
 
@@ -71,6 +90,9 @@ class FavoritesViewModel : ViewModel() {
             .collection("favorites")
             .document(event.id)
             .set(event)
+            .addOnSuccessListener {
+                sendFavoriteAddedNotification(context, event.title)
+            }
     }
 
     fun removeFromFavorites(eventId: String) {

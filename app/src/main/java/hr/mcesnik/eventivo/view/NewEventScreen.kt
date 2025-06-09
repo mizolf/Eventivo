@@ -7,7 +7,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -24,18 +24,22 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -46,12 +50,9 @@ import java.util.Date
 import java.util.Locale
 import java.util.UUID
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewEventScreen(
-    navController: NavHostController
-) {
+fun NewEventScreen(navController: NavHostController) {
     val context = LocalContext.current
     val title = remember { mutableStateOf("") }
     val date = remember { mutableStateOf<Date?>(null) }
@@ -66,16 +67,13 @@ fun NewEventScreen(
 
     val datePickerState = rememberDatePickerState()
     val timePickerState = rememberTimePickerState()
-
     val selectedYear = remember { mutableStateOf(0) }
     val selectedMonth = remember { mutableStateOf(0) }
     val selectedDay = remember { mutableStateOf(0) }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
-        onResult = { uri: Uri? ->
-            imageUri.value = uri
-        }
+        onResult = { uri: Uri? -> imageUri.value = uri }
     )
 
     if (showDatePicker.value) {
@@ -83,10 +81,8 @@ fun NewEventScreen(
             onDismissRequest = { showDatePicker.value = false },
             confirmButton = {
                 TextButton(onClick = {
-                    val millis = datePickerState.selectedDateMillis
-                    if (millis != null) {
-                        val calendar = Calendar.getInstance()
-                        calendar.timeInMillis = millis
+                    datePickerState.selectedDateMillis?.let {
+                        val calendar = Calendar.getInstance().apply { timeInMillis = it }
                         selectedYear.value = calendar.get(Calendar.YEAR)
                         selectedMonth.value = calendar.get(Calendar.MONTH)
                         selectedDay.value = calendar.get(Calendar.DAY_OF_MONTH)
@@ -94,12 +90,12 @@ fun NewEventScreen(
                     showDatePicker.value = false
                     showTimePicker.value = true
                 }) {
-                    Text("Next")
+                    Text("Next", color = Color(0xFF333333))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDatePicker.value = false }) {
-                    Text("Cancel")
+                    Text("Cancel", color = Color(0xFF333333))
                 }
             }
         ) {
@@ -112,34 +108,31 @@ fun NewEventScreen(
             onDismissRequest = { showTimePicker.value = false },
             title = { Text("Select Time") },
             text = {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentSize()
-                ) {
+                Box(Modifier.fillMaxWidth().wrapContentSize()) {
                     TimePicker(state = timePickerState)
                 }
             },
             confirmButton = {
                 TextButton(onClick = {
-                    val calendar = Calendar.getInstance()
-                    calendar.set(
-                        selectedYear.value,
-                        selectedMonth.value,
-                        selectedDay.value,
-                        timePickerState.hour,
-                        timePickerState.minute,
-                        0
-                    )
+                    val calendar = Calendar.getInstance().apply {
+                        set(
+                            selectedYear.value,
+                            selectedMonth.value,
+                            selectedDay.value,
+                            timePickerState.hour,
+                            timePickerState.minute,
+                            0
+                        )
+                    }
                     date.value = calendar.time
                     showTimePicker.value = false
                 }) {
-                    Text("OK")
+                    Text("OK", color = Color(0xFF333333))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showTimePicker.value = false }) {
-                    Text("Cancel")
+                    Text("Cancel", color = Color(0xFF333333))
                 }
             }
         )
@@ -148,69 +141,102 @@ fun NewEventScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Create a new event") },
+                title = { Text("Create Event", color = Color(0xFF333333)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color(0xFF333333))
                     }
-                }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color(0xFFF5F5F5)
+                )
             )
-        }
+        },
+        containerColor = Color(0xFFF5F5F5)
     ) { innerPadding ->
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+
+            val fieldColors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = Color(0xFF333333),
+                unfocusedTextColor = Color(0xFF333333),
+                focusedBorderColor = Color(0xFF333333),
+                unfocusedBorderColor = Color(0xFFCCCCCC),
+                focusedLabelColor = Color(0xFF333333),
+                unfocusedLabelColor = Color(0xFF666666),
+                cursorColor = Color(0xFF333333)
+            )
+
             OutlinedTextField(
                 value = title.value,
                 onValueChange = { title.value = it },
                 label = { Text("Title") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = fieldColors
             )
+
             Button(
                 onClick = { showDatePicker.value = true },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF333333),
+                    contentColor = Color.White
+                )
             ) {
                 Text(
-                    date.value?.let {
+                    text = date.value?.let {
                         SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault()).format(it)
                     } ?: "Select Date and Time"
                 )
             }
+
             OutlinedTextField(
                 value = clothing.value,
                 onValueChange = { clothing.value = it },
-                label = { Text("Clothing style") },
-                modifier = Modifier.fillMaxWidth()
+                label = { Text("Clothing Style") },
+                modifier = Modifier.fillMaxWidth(),
+                colors = fieldColors
             )
+
             OutlinedTextField(
                 value = drink.value,
                 onValueChange = { drink.value = it },
-                label = { Text("Drinks offered") },
-                modifier = Modifier.fillMaxWidth()
+                label = { Text("Drinks Offered") },
+                modifier = Modifier.fillMaxWidth(),
+                colors = fieldColors
             )
+
             OutlinedTextField(
                 value = music.value,
                 onValueChange = { music.value = it },
-                label = { Text("Music type") },
-                modifier = Modifier.fillMaxWidth()
+                label = { Text("Music Type") },
+                modifier = Modifier.fillMaxWidth(),
+                colors = fieldColors
             )
 
-            Button(onClick = { launcher.launch("image/*") }) {
+            Button(
+                onClick = { launcher.launch("image/*") },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF333333),
+                    contentColor = Color.White
+                )
+            ) {
                 Text("Choose Image from Gallery")
             }
 
             imageUri.value?.let {
-                Text("Selected image: ${it.lastPathSegment}")
+                Text(
+                    "Selected image: ${it.lastPathSegment}",
+                    color = Color(0xFF333333),
+                    fontSize = 14.sp
+                )
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             Button(
                 onClick = {
@@ -219,50 +245,50 @@ fun NewEventScreen(
                         val firestore = FirebaseFirestore.getInstance()
                         val storageRef = FirebaseStorage.getInstance().reference
                         val imageRef = storageRef.child("events/${UUID.randomUUID()}.jpg")
+
                         imageRef.putFile(imageUri.value!!)
                             .continueWithTask { task ->
-                                if (!task.isSuccessful) throw task.exception ?: Exception("Unknown upload error")
+                                if (!task.isSuccessful) throw task.exception ?: Exception("Unknown error")
                                 imageRef.downloadUrl
                             }.addOnSuccessListener { uri ->
-                                val imageUrl = uri.toString()
-
-                                val eventDocRef = firestore.collection("events").document()
-                                val eventId = eventDocRef.id
-
-                                val newEvent = Event(
-                                    id = eventId,
+                                val event = Event(
+                                    id = UUID.randomUUID().toString(),
                                     title = title.value,
-                                    clothing = clothing.value,
                                     date = date.value,
+                                    clothing = clothing.value,
                                     drink = drink.value,
                                     music = music.value,
-                                    image = imageUrl
+                                    image = uri.toString()
                                 )
-
-                                firestore.collection("events")
-                                    .add(newEvent)
+                                firestore.collection("events").add(event)
                                     .addOnSuccessListener {
                                         Toast.makeText(context, "Event created!", Toast.LENGTH_SHORT).show()
-                                        uploading.value = false
                                         navController.popBackStack()
-                                    }
-                                    .addOnFailureListener {
+                                    }.addOnFailureListener {
                                         Toast.makeText(context, "Failed to save event", Toast.LENGTH_SHORT).show()
+                                    }.also {
                                         uploading.value = false
                                     }
                             }.addOnFailureListener {
-                                Toast.makeText(context, "Image upload failed", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Upload failed", Toast.LENGTH_SHORT).show()
                                 uploading.value = false
                             }
                     } else {
                         Toast.makeText(context, "Please select an image", Toast.LENGTH_SHORT).show()
                     }
                 },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = !uploading.value
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                enabled = !uploading.value,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF333333),
+                    contentColor = Color.White
+                )
             ) {
                 Text(if (uploading.value) "Uploading..." else "Create Event")
             }
         }
     }
 }
+

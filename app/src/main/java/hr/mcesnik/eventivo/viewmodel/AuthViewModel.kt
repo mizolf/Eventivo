@@ -14,6 +14,9 @@ class AuthViewModel : ViewModel() {
     private val _userId = MutableStateFlow<String?>(auth.currentUser?.uid)
     val userId: StateFlow<String?> = _userId
 
+    private val _userEmail = MutableStateFlow<String?>(auth.currentUser?.email)
+    val userEmail: StateFlow<String?> = _userEmail
+
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
@@ -28,6 +31,7 @@ class AuthViewModel : ViewModel() {
             try {
                 auth.signInWithEmailAndPassword(email, password).await()
                 _userId.value = auth.currentUser?.uid
+                _userEmail.value = auth.currentUser?.email
                 onSuccess()
             } catch (e: Exception) {
                 _authError.value = e.message ?: "Authentication failed"
@@ -45,6 +49,7 @@ class AuthViewModel : ViewModel() {
             try {
                 auth.createUserWithEmailAndPassword(email, password).await()
                 _userId.value = auth.currentUser?.uid
+                _userEmail.value = auth.currentUser?.email
                 onSuccess()
             } catch (e: Exception) {
                 _authError.value = e.message ?: "Registration failed"
@@ -57,5 +62,6 @@ class AuthViewModel : ViewModel() {
     fun logout() {
         auth.signOut()
         _userId.value = null
+        _userEmail.value = null
     }
 }

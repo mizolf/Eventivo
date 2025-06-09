@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,6 +56,7 @@ fun EventCard(
     favoritesViewModel: FavoritesViewModel,
     authViewModel: AuthViewModel,
 ){
+    val context = LocalContext.current
     val isFavorite by favoritesViewModel.isFavorite(event.id).collectAsState()
     val eventJson = Uri.encode(Gson().toJson(event))
     val navigateToEventScreen = {
@@ -87,7 +89,7 @@ fun EventCard(
                     if (isFavorite) {
                         favoritesViewModel.removeFromFavorites(event.id)
                     } else {
-                        favoritesViewModel.addToFavorites(event)
+                        favoritesViewModel.addToFavorites(event, context)
                     }
                 },
                 modifier = Modifier
