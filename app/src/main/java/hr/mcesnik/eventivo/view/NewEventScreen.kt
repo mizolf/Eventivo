@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
@@ -173,17 +174,46 @@ fun NewEventScreen(navController: NavHostController) {
                 cursorColor = Color(0xFF333333)
             )
 
+            val roundedShape = RoundedCornerShape(24.dp)
+
             OutlinedTextField(
                 value = title.value,
                 onValueChange = { title.value = it },
                 label = { Text("Title") },
                 modifier = Modifier.fillMaxWidth(),
+                shape = roundedShape,
+                colors = fieldColors
+            )
+
+            OutlinedTextField(
+                value = clothing.value,
+                onValueChange = { clothing.value = it },
+                label = { Text("Clothing Style") },
+                modifier = Modifier.fillMaxWidth(),
+                shape = roundedShape,
+                colors = fieldColors
+            )
+
+            OutlinedTextField(
+                value = drink.value,
+                onValueChange = { drink.value = it },
+                label = { Text("Drinks Offered") },
+                modifier = Modifier.fillMaxWidth(),
+                shape = roundedShape,
+                colors = fieldColors
+            )
+
+            OutlinedTextField(
+                value = music.value,
+                onValueChange = { music.value = it },
+                label = { Text("Music Type") },
+                modifier = Modifier.fillMaxWidth(),
+                shape = roundedShape,
                 colors = fieldColors
             )
 
             Button(
                 onClick = { showDatePicker.value = true },
-                modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF333333),
                     contentColor = Color.White
@@ -195,30 +225,6 @@ fun NewEventScreen(navController: NavHostController) {
                     } ?: "Select Date and Time"
                 )
             }
-
-            OutlinedTextField(
-                value = clothing.value,
-                onValueChange = { clothing.value = it },
-                label = { Text("Clothing Style") },
-                modifier = Modifier.fillMaxWidth(),
-                colors = fieldColors
-            )
-
-            OutlinedTextField(
-                value = drink.value,
-                onValueChange = { drink.value = it },
-                label = { Text("Drinks Offered") },
-                modifier = Modifier.fillMaxWidth(),
-                colors = fieldColors
-            )
-
-            OutlinedTextField(
-                value = music.value,
-                onValueChange = { music.value = it },
-                label = { Text("Music Type") },
-                modifier = Modifier.fillMaxWidth(),
-                colors = fieldColors
-            )
 
             Button(
                 onClick = { launcher.launch("image/*") },
