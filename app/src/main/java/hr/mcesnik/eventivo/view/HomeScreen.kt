@@ -136,6 +136,7 @@ fun HomeScreen(
                     selected = false,
                     icon = { Icon(Icons.Filled.Info, contentDescription = null) },
                     onClick = {
+                        navController.navigate("help")
                         scope.launch { drawerState.close() }
                     },
                 )

@@ -25,6 +25,7 @@ import hr.mcesnik.eventivo.model.Event
 import hr.mcesnik.eventivo.ui.theme.EventivoTheme
 import hr.mcesnik.eventivo.view.EventScreen
 import hr.mcesnik.eventivo.view.FavoriteScreen
+import hr.mcesnik.eventivo.view.HelpScreen
 import hr.mcesnik.eventivo.view.HomeScreen
 import hr.mcesnik.eventivo.view.LoginScreen
 import hr.mcesnik.eventivo.view.NewEventScreen
@@ -75,6 +76,7 @@ fun AppNavHost(navController: NavHostController) {
         composable("profile") { ProfileScreen(navController) }
         composable("register") { RegisterScreen(navController) }
         composable("new-event") { NewEventScreen(navController) }
+        composable("help") { HelpScreen(navController) }
     }
 }
 
