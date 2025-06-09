@@ -246,41 +246,48 @@ fun NewEventScreen(navController: NavHostController) {
 
             Button(
                 onClick = {
-                    if (imageUri.value != null) {
-                        uploading.value = true
-                        val firestore = FirebaseFirestore.getInstance()
-                        val storageRef = FirebaseStorage.getInstance().reference
-                        val imageRef = storageRef.child("events/${UUID.randomUUID()}.jpg")
+                    when {
+                        title.value.isBlank() -> Toast.makeText(context, "Title is required", Toast.LENGTH_SHORT).show()
+                        date.value == null -> Toast.makeText(context, "Date and time are required", Toast.LENGTH_SHORT).show()
+                        clothing.value.isBlank() -> Toast.makeText(context, "Clothing style is required", Toast.LENGTH_SHORT).show()
+                        drink.value.isBlank() -> Toast.makeText(context, "Drinks offered is required", Toast.LENGTH_SHORT).show()
+                        music.value.isBlank() -> Toast.makeText(context, "Music type is required", Toast.LENGTH_SHORT).show()
+                        imageUri.value == null -> Toast.makeText(context, "Image is required", Toast.LENGTH_SHORT).show()
+                        else -> {
+                            uploading.value = true
+                            val firestore = FirebaseFirestore.getInstance()
+                            val storageRef = FirebaseStorage.getInstance().reference
+                            val imageRef = storageRef.child("events/${UUID.randomUUID()}.jpg")
 
-                        imageRef.putFile(imageUri.value!!)
-                            .continueWithTask { task ->
-                                if (!task.isSuccessful) throw task.exception ?: Exception("Unknown error")
-                                imageRef.downloadUrl
-                            }.addOnSuccessListener { uri ->
-                                val event = Event(
-                                    id = UUID.randomUUID().toString(),
-                                    title = title.value,
-                                    date = date.value,
-                                    clothing = clothing.value,
-                                    drink = drink.value,
-                                    music = music.value,
-                                    image = uri.toString()
-                                )
-                                firestore.collection("events").add(event)
-                                    .addOnSuccessListener {
-                                        Toast.makeText(context, "Event created!", Toast.LENGTH_SHORT).show()
-                                        navController.popBackStack()
-                                    }.addOnFailureListener {
-                                        Toast.makeText(context, "Failed to save event", Toast.LENGTH_SHORT).show()
-                                    }.also {
-                                        uploading.value = false
-                                    }
-                            }.addOnFailureListener {
-                                Toast.makeText(context, "Upload failed", Toast.LENGTH_SHORT).show()
-                                uploading.value = false
-                            }
-                    } else {
-                        Toast.makeText(context, "Please select an image", Toast.LENGTH_SHORT).show()
+                            imageRef.putFile(imageUri.value!!)
+                                .continueWithTask { task ->
+                                    if (!task.isSuccessful) throw task.exception ?: Exception("Unknown error")
+                                    imageRef.downloadUrl
+                                }.addOnSuccessListener { uri ->
+                                    val event = Event(
+                                        id = UUID.randomUUID().toString(),
+                                        title = title.value,
+                                        date = date.value,
+                                        clothing = clothing.value,
+                                        drink = drink.value,
+                                        music = music.value,
+                                        image = uri.toString()
+                                    )
+                                    firestore.collection("events").add(event)
+                                        .addOnSuccessListener {
+                                            Toast.makeText(context, "Event created!", Toast.LENGTH_SHORT).show()
+                                            navController.popBackStack()
+                                        }
+                                        .addOnFailureListener {
+                                            Toast.makeText(context, "Failed to save event", Toast.LENGTH_SHORT).show()
+                                        }.also {
+                                            uploading.value = false
+                                        }
+                                }.addOnFailureListener {
+                                    Toast.makeText(context, "Upload failed", Toast.LENGTH_SHORT).show()
+                                    uploading.value = false
+                                }
+                        }
                     }
                 },
                 modifier = Modifier
