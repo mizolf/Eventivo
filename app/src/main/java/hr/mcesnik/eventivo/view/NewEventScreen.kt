@@ -217,7 +217,12 @@ fun NewEventScreen(navController: NavHostController) {
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF333333),
                     contentColor = Color.White
-                )
+                ),
+                shape = RoundedCornerShape(16.dp),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
             ) {
                 Text(
                     text = date.value?.let {
@@ -231,7 +236,12 @@ fun NewEventScreen(navController: NavHostController) {
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF333333),
                     contentColor = Color.White
-                )
+                ),
+                shape = RoundedCornerShape(16.dp),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
             ) {
                 Text("Choose Image from Gallery")
             }
@@ -290,9 +300,11 @@ fun NewEventScreen(navController: NavHostController) {
                         }
                     }
                 },
+                shape = RoundedCornerShape(16.dp),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp),
+                    .height(48.dp),
                 enabled = !uploading.value,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF333333),

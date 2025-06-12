@@ -8,6 +8,7 @@ import com.google.firebase.firestore.Query
 import hr.mcesnik.eventivo.model.Event
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.util.Date
 
 
 class EventViewModel : ViewModel() {
@@ -32,9 +33,17 @@ class EventViewModel : ViewModel() {
                 }
 
                 snapshot?.let { querySnapshot ->
+                    val now = Date()
+
                     val eventList = querySnapshot.documents.mapNotNull { document ->
                         try {
-                            document.toObject(Event::class.java)?.copy(id = document.id)
+                            val event = document.toObject(Event::class.java)?.copy(id = document.id)
+                            if (event != null && event.date != null && event.date.before(now)) {
+                                firestore.collection("events").document(document.id).delete()
+                                null
+                            } else {
+                                event
+                            }
                         } catch (e: Exception) {
                             Log.e("EventViewModel", "Error converting document to Event", e)
                             null
